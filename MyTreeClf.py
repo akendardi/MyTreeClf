@@ -30,15 +30,15 @@ class MyTreeClf:
             self,
             max_depth: int = 5,
             min_samples_split: int = 2,
-            max_leafs: int = 20,
+            max_leaves: int = 20,
             criterion: str = "entropy",
             bins=None
     ):
         self.max_depth = max_depth
         self.min_samples_split = min_samples_split
-        self.max_leafs = max_leafs
+        self.max_leaves = max_leaves
         self.n = 0
-        self.leafs_cnt = 0
+        self.leaves_cnt = 0
         self.bins = bins
         self.criterion = criterion
         self.histogram = {}
@@ -103,7 +103,7 @@ class MyTreeClf:
             potential_leaves += 1
         if len(right_idx) > 0:
             potential_leaves += 1
-        if depth != 0 and self.leafs_cnt + potential_leaves > self.max_leafs:
+        if depth != 0 and self.leaves_cnt + potential_leaves > self.max_leaves:
             return self._get_leave(y, depth)
 
         left_node = self._build_tree(depth + 1, X.loc[left_idx], y.loc[left_idx])
@@ -121,7 +121,7 @@ class MyTreeClf:
 
     def _get_leave(self, y: pd.Series, depth: int) -> TreeNode:
         positive_class_count = (y == 1).sum()
-        self.leafs_cnt += 1
+        self.leaves_cnt += 1
         return TreeNode(
             value=positive_class_count / len(y),
             depth=depth
