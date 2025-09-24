@@ -36,7 +36,7 @@ class MyTreeClf:
     ):
         self.max_depth = max_depth
         self.min_samples_split = min_samples_split
-        self.max_leaves = max_leaves
+        self.max_leafs = max_leaves
         self.n = 0
         self.leaves_cnt = 0
         self.bins = bins
@@ -47,7 +47,7 @@ class MyTreeClf:
 
     def _get_split_points(self, X: pd.DataFrame, feature: str) -> np.array:
         if self.bins is None:
-            unique_values = np.sort(X[feature].values)
+            unique_values = np.sort(X[feature].unique())
             return (unique_values[1:] + unique_values[:-1]) / 2
         if feature not in self.histogram:
             unique_values = X[feature].values
@@ -103,7 +103,7 @@ class MyTreeClf:
             potential_leaves += 1
         if len(right_idx) > 0:
             potential_leaves += 1
-        if depth != 0 and self.leaves_cnt + potential_leaves > self.max_leaves:
+        if depth != 0 and self.leaves_cnt + potential_leaves > self.max_leafs:
             return self._get_leave(y, depth)
 
         left_node = self._build_tree(depth + 1, X.loc[left_idx], y.loc[left_idx])
@@ -183,6 +183,7 @@ class MyTreeClf:
 
     def print_tree(self):
         self._recursive_print_tree(self.root)
+        print(self.leaves_cnt)
 
     def _recursive_print_tree(self, root: TreeNode, side: str = ""):
         if root is None:
