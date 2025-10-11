@@ -20,7 +20,7 @@ class TreeNode:
         self.depth = depth
         self.value = value
 
-    def is_leave(self):
+    def is_leaf(self):
         return self.value is not None
 
 
@@ -74,7 +74,7 @@ class MyTreeClf:
         result = []
         for _, row in X.iterrows():
             currNode: TreeNode = self.root
-            while not currNode.is_leave():
+            while not currNode.is_leaf():
                 if row[currNode.feature] <= currNode.split_value:
                     currNode = currNode.left_node
                 else:
@@ -88,10 +88,10 @@ class MyTreeClf:
 
     def _build_tree(self, depth, X: pd.DataFrame, y: pd.Series) -> TreeNode:
         if self._get_entropy(y) == 0:
-            return self._get_leave(y, depth)
+            return self._get_leaf(y, depth)
 
         if depth == self.max_depth or len(y) < self.min_samples_split:
-            return self._get_leave(y, depth)
+            return self._get_leaf(y, depth)
 
         feature, split_point, _ = self.get_best_split(X, y)
 
@@ -104,7 +104,7 @@ class MyTreeClf:
         if len(right_idx) > 0:
             potential_leaves += 1
         if depth != 0 and self.leaves_cnt + potential_leaves > self.max_leaves:
-            return self._get_leave(y, depth)
+            return self._get_leaf(y, depth)
 
         left_node = self._build_tree(depth + 1, X.loc[left_idx], y.loc[left_idx])
         right_node = self._build_tree(depth + 1, X.loc[right_idx], y.loc[right_idx])
@@ -119,7 +119,7 @@ class MyTreeClf:
             depth=depth
         )
 
-    def _get_leave(self, y: pd.Series, depth: int) -> TreeNode:
+    def _get_leaf(self, y: pd.Series, depth: int) -> TreeNode:
         positive_class_count = (y == 1).sum()
         self.leaves_cnt += 1
         return TreeNode(
@@ -188,7 +188,7 @@ class MyTreeClf:
     def _recursive_print_tree(self, root: TreeNode, side: str = ""):
         if root is None:
             return
-        if root.is_leave():
+        if root.is_leaf():
             print(f"{root.depth * ' '} {side} = {root.value}")
         else:
             print(f"{root.depth * ' '}{root.feature} | {root.split_value}")
