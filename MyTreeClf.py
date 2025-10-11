@@ -36,7 +36,7 @@ class MyTreeClf:
     ):
         self.max_depth = max_depth
         self.min_samples_split = min_samples_split
-        self.max_leafs = max_leaves
+        self.max_leaves = max_leaves
         self.n = 0
         self.leaves_cnt = 0
         self.bins = bins
@@ -103,7 +103,7 @@ class MyTreeClf:
             potential_leaves += 1
         if len(right_idx) > 0:
             potential_leaves += 1
-        if depth != 0 and self.leaves_cnt + potential_leaves > self.max_leafs:
+        if depth != 0 and self.leaves_cnt + potential_leaves > self.max_leaves:
             return self._get_leave(y, depth)
 
         left_node = self._build_tree(depth + 1, X.loc[left_idx], y.loc[left_idx])
